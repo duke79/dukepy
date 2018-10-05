@@ -6,8 +6,7 @@ from sqlalchemy.dialects.mysql import INTEGER
 
 
 class User(db.Model):
-    __tablename__ = 'user'
-    id = db.Column(INTEGER(unsigned=True), primary_key=True, autoincrement=True, nullable=False)
+    __tablename__ = 'user'    
     name = db.Column(db.String(200), nullable=True)
     phone_number = db.Column(db.String(50), nullable=True)
     photo_url = db.Column(db.String(2013), nullable=True)
