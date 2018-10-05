@@ -1,6 +1,11 @@
 from app import db
-from tables import *
+from app.data.tables import *
 
-if __name__ == "__main__":    
-    """ Initialize schema in mysql database """
+
+def initDB():    
+    # Initialize schema in mysql database
     db.create_all()
+
+
+if __name__ == "__main__":
+    initDB()
