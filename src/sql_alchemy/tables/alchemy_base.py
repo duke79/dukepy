@@ -1,7 +1,9 @@
 import datetime
 import traceback
+from enum import Enum
 
 from sqlalchemy import create_engine, Column, DateTime, func
+from sqlalchemy.dialects.postgresql import JSON, JSONB
 from sqlalchemy.exc import DatabaseError
 from flask_sqlalchemy import Model
 from sqlalchemy.orm import sessionmaker
@@ -10,22 +12,39 @@ from app import Config
 from app.utils.traces import print_exception_traces
 
 
+class DBType(Enum):
+    sqlite = 1
+    mysql = 2
+    postgres = 3
+
+
+db_type = DBType.sqlite  # Default
+if "sqlite" == Config()["database"]["active"]:
+    db_type = DBType.sqlite
+if "mysql" == Config()["database"]["active"]:
+    db_type = DBType.mysql
+if "postgres" == Config()["database"]["active"]:
+    db_type = DBType.postgres
+
+
 ## Init session
 class DBSession():
-    def uri_sqlite(self):
-        db_uri = "sqlite:///sqlalchemy_example.db"
-        return db_uri
+    def uri(self, type):
+        db_uri = None
 
-    def uri_mysql(self):
-        config = Config()["database"]["mysql"]
-        db_uri = "mysql+pymysql://{0}:{1}@{2}:3306/{3}".format(config["user"], config["password"], config["host"],
-                                                               config["db"])
-        return db_uri
+        if type == DBType.sqlite:
+            db_uri = "sqlite:///sqlalchemy_example.db"
 
-    def uri_postgres(self):
-        config = Config()["database"]["postgres"]
-        db_uri = "postgresql://{0}:{1}@{2}:{3}/{4}".format(config["user"], config["password"], config["host"],
-                                                           config["port"], config["db"])
+        if type == DBType.mysql:
+            config = Config()["database"]["mysql"]
+            db_uri = "mysql+pymysql://{0}:{1}@{2}:3306/{3}".format(config["user"], config["password"], config["host"],
+                                                                   config["db"])
+
+        if type == DBType.postgres:
+            config = Config()["database"]["postgres"]
+            db_uri = "postgresql://{0}:{1}@{2}:{3}/{4}".format(config["user"], config["password"], config["host"],
+                                                               config["port"], config["db"])
+
         return db_uri
 
     def create_session(self, db_uri):
@@ -37,9 +56,7 @@ class DBSession():
 
 
 db_session_helper = DBSession()
-# db_uri = db_session_helper.uri_mysql()
-db_uri = db_session_helper.uri_postgres()
-# db_uri = db_session_helper.uri_sqlite()
+db_uri = db_session_helper.uri(db_type)
 db_session = db_session_helper.create_session(db_uri)
 
 
@@ -55,6 +72,8 @@ class AlchemyBase(Model):
     updated_at = Column(DateTime, nullable=False,
                         server_default=func.now(),
                         server_onupdate=func.now())
+    if db_type == DBType.postgres:
+        json_data = Column(JSONB, nullable=True)
 
     def save(self):
         local_object = db_session.merge(self)
