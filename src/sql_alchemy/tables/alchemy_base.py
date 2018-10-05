@@ -2,7 +2,7 @@ import datetime
 import traceback
 from enum import Enum
 
-from sqlalchemy import create_engine, Column, DateTime, func
+from sqlalchemy import create_engine, Column, DateTime, func, Integer
 from sqlalchemy.dialects.postgresql import JSON, JSONB
 from sqlalchemy.exc import DatabaseError
 from flask_sqlalchemy import Model
@@ -66,6 +66,7 @@ class AlchemyBase(Model):
     ref: https://chase-seibert.github.io/blog/2016/03/31/flask-sqlalchemy-sessionless.html
     """
 
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     # https://stackoverflow.com/a/12155686/973425
     created_at = Column(DateTime, nullable=False,
                         server_default=func.now())
