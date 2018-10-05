@@ -82,6 +82,7 @@ class Config(dict, metaclass=Singleton):
             "port": "80"
         }
         self.config["database"] = {
+            "active": "postgres",
             "mysql": {
                 "db": "dummy_db",
                 "user": "dummy_user",
