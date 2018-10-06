@@ -77,12 +77,14 @@ class Config(dict, metaclass=Singleton):
             json.dump(self.config, f, indent=4)
 
     def initDefaults(self):
+        sqlite_path = os.path.join(self.config_dir, "sqlite.db")
+
         self.config["server"] = {
             "host": "0.0.0.0",
             "port": "80"
         }
         self.config["database"] = {
-            "active": "postgres",
+            "active": "sqlite",
             "mysql": {
                 "db": "dummy_db",
                 "user": "dummy_user",
@@ -96,9 +98,12 @@ class Config(dict, metaclass=Singleton):
                 "password": "dummy_password",
                 "port": "5432"
             },
+            "sqlite": {
+                "path": sqlite_path
+            },
         }
-        self.config["debug"] = False
-        self.config["stacktrace"] = False
+        self.config["debug"] = True
+        self.config["stacktrace"] = True
         self.config["allowed_domains"] = ["http://1", "http://2"]
 
 
