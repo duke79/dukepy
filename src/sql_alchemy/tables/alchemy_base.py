@@ -2,7 +2,7 @@ import datetime
 import traceback
 from enum import Enum
 
-from sqlalchemy import create_engine, Column, DateTime, func, Integer
+from sqlalchemy import create_engine, Column, DateTime, func, Integer, BigInteger, String
 from sqlalchemy.dialects.postgresql import JSON, JSONB
 from sqlalchemy.exc import DatabaseError
 from flask_sqlalchemy import Model
@@ -33,7 +33,7 @@ class DBSession():
         db_uri = None
 
         if type == DBType.sqlite:
-            db_uri = "sqlite:///sqlalchemy_example.db"
+            db_uri = "sqlite:///" + Config()["database"]["sqlite"]["path"]
 
         if type == DBType.mysql:
             config = Config()["database"]["mysql"]
@@ -66,15 +66,22 @@ class AlchemyBase(Model):
     ref: https://chase-seibert.github.io/blog/2016/03/31/flask-sqlalchemy-sessionless.html
     """
 
-    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    if db_type == DBType.sqlite:
+        id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+        json_data = Column(String, nullable=True)
+    if db_type == DBType.mysql:
+        id = Column(BigInteger, primary_key=True, autoincrement=True, nullable=False)
+        json_data = Column(String, nullable=True)
+    if db_type == DBType.postgres:
+        id = Column(BigInteger, primary_key=True, autoincrement=True, nullable=False)
+        json_data = Column(JSONB, nullable=True)
+
     # https://stackoverflow.com/a/12155686/973425
     created_at = Column(DateTime, nullable=False,
                         server_default=func.now())
     updated_at = Column(DateTime, nullable=False,
                         server_default=func.now(),
                         server_onupdate=func.now())
-    if db_type == DBType.postgres:
-        json_data = Column(JSONB, nullable=True)
 
     def save(self):
         local_object = db_session.merge(self)
