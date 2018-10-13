@@ -40,13 +40,13 @@ class Config(dict, metaclass=Singleton):
                 try:
                     config_stored = json.loads(conf)
                     config_deafult = self.defaults()
-                    config_modified = dict_diff(config_deafult, config_stored,
-                                                udpate_modified_keys=True,
-                                                udpate_added_keys=False,
-                                                udpate_removed_keys=False)
+                    are_config_keys_modified = dict_diff(config_deafult, config_stored,
+                                                         udpate_modified_keys=True,
+                                                         udpate_added_keys=False,
+                                                         udpate_removed_keys=False)
 
                     self.config = config_deafult
-                    if config_modified:
+                    if are_config_keys_modified:
                         self.commit()
                 except json.decoder.JSONDecodeError as e:
                     raise ConfigError("Config file invalid format")
