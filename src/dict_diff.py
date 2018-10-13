@@ -25,15 +25,15 @@ def dict_diff(d1, d2,
         else:
             if type(d1[k]) is dict:
                 if path == "":
-                    path = k
+                    local_path = k
                 else:
                     local_path = path + "->" + k
 
-                    dict_diff(d1[k], d2[k],
-                              udpate_modified_keys=udpate_modified_keys,
-                              udpate_added_keys=udpate_added_keys,
-                              udpate_removed_keys=udpate_removed_keys,
-                              path=local_path)
+                dict_diff(d1[k], d2[k],
+                          udpate_modified_keys=udpate_modified_keys,
+                          udpate_added_keys=udpate_added_keys,
+                          udpate_removed_keys=udpate_removed_keys,
+                          path=local_path)
             else:
                 if d1[k] != d2[k]:
                     # ret = True
