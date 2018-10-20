@@ -3,7 +3,8 @@ import os
 import setuptools
 
 file_path = os.path.abspath(__file__)
-readme = os.path.join(os.path.dirname(os.path.dirname(file_path)), "README.md")
+readme = os.path.join(os.path.dirname(file_path), "README.md")
+# print(readme)
 with open(readme, "r") as fh:
     long_description = fh.read()
 
@@ -11,7 +12,7 @@ setuptools.setup(name='dukepy',
                  description='A useful collection of utilities',
                  long_description=long_description,
                  long_description_content_type="text/markdown",
-                 version='0.0.1',
+                 version='0.0.2',
                  url='https://github.com/duke79/libpython',
                  author='Pulkit Singh',
                  author_email='pulkitsingh01@gmail.com',
