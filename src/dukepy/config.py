@@ -14,15 +14,21 @@ class Config(dict, metaclass=Singleton):
     def __str__(self):
         return json.dumps(self.config, indent=4)
 
-    def __init__(self):
+    def __init__(self, path="C:\\temp\\config.json", defaults=None):
+        """
+        :param path: Full path of the json file
+        :param defaults: Default configuration eg. {"key1":"value1", "keygroup1":{"key2":"value2"}}
+        """
+
         dict.__init__(self, dict())  # Because dict is extended
 
-        # Open src/flask/config/config.json
-        file_dir = os.path.abspath(__file__)
-        flask_dir = os.path.dirname(os.path.dirname(os.path.dirname(file_dir)))
-        self.config_dir = os.path.join(flask_dir, "config")
-        # self.config_dir = os.path.join(os.path.expanduser("~"), ".samanvaya")
-        self.config_file = os.path.join(self.config_dir, "config.json")
+        if defaults is None:
+            self.defaults = self._defaults()
+        else:
+            self.defaults = defaults
+
+        self.config_file = os.path.normpath(path)
+        self.config_dir = os.path.dirname(self.config_file)
 
         # create config.json and initialize empty self.config
         if not os.path.exists(self.config_file):
@@ -30,7 +36,7 @@ class Config(dict, metaclass=Singleton):
                 os.mkdir(self.config_dir)  # Create directory
             open(self.config_file, "a").close()  # Create empty file
             self.config = dict()
-            self.config = self.defaults()  # Initialize with default values
+            self.config = self.defaults  # Initialize with default values
             self.commit()
 
         # initialize self.config from config.json
@@ -39,7 +45,7 @@ class Config(dict, metaclass=Singleton):
             if conf != "":
                 try:
                     config_stored = json.loads(conf)
-                    config_deafult = self.defaults()
+                    config_deafult = self.defaults
                     are_config_keys_modified = dict_diff(config_deafult, config_stored,
                                                          udpate_modified_keys=True,
                                                          udpate_added_keys=False,
@@ -87,7 +93,7 @@ class Config(dict, metaclass=Singleton):
         with open(self.config_file, "w+") as f:
             json.dump(self.config, f, indent=4)
 
-    def defaults(self):
+    def _defaults(self):
         config_default = dict()
 
         sqlite_path = os.path.join(self.config_dir, "sqlite.db")
