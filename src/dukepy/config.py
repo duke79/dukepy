@@ -2,8 +2,8 @@ import json
 import os
 import uuid
 
-from app.utils.dict_diff import dict_diff
-from app.utils.singleton import Singleton
+from dukepy.dict_diff import dict_diff
+from dukepy.singleton import Singleton
 
 
 class ConfigError(Exception):

@@ -7,6 +7,7 @@ name = "pypi"
 setuptools = "*"
 wheel = "*"
 twine = "*"
+colorama = "*"
 
 [dev-packages]
 
