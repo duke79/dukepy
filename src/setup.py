@@ -24,8 +24,8 @@ setuptools.setup(name='dukepy',
                  ],
                  packages=setuptools.find_packages(),
                  install_requires=[
-                     'PyYAML>=3.11',
-                     'sh>=1.11'
+                     'colorama',
+                     'enum'
                  ],
                  entry_points={
                      'console_scripts': [
