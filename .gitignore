@@ -1,1 +1,4 @@
 /.idea/
+/src/build/
+/src/dist/
+/src/dukepy.egg-info/
