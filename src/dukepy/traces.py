@@ -1,5 +1,5 @@
 import traceback
-from app import Config
+from .config import Config
 
 
 def print_exception_traces(e):

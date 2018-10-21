@@ -8,6 +8,8 @@ setuptools = "*"
 wheel = "*"
 twine = "*"
 colorama = "*"
+"pypiwin32" = "*"
+flask-sqlalchemy = "*"
 
 [dev-packages]
 

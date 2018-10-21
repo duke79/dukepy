@@ -22,13 +22,13 @@ class Config(dict, metaclass=Singleton):
 
         dict.__init__(self, dict())  # Because dict is extended
 
+        self.config_file = os.path.normpath(path)
+        self.config_dir = os.path.dirname(self.config_file)
+
         if defaults is None:
             self.defaults = self._defaults()
         else:
             self.defaults = defaults
-
-        self.config_file = os.path.normpath(path)
-        self.config_dir = os.path.dirname(self.config_file)
 
         # create config.json and initialize empty self.config
         if not os.path.exists(self.config_file):

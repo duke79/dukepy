@@ -8,9 +8,9 @@ class Handler_Class(object):
 			# Microsoft.Office.Interop.Outlook _MailItem properties:
 			# https://msdn.microsoft.com/en-us/library/microsoft.office.interop.outlook._mailitem_properties.aspx
 			mailItem = MailBot.outlookHandled.Session.GetItemFromID(ID)
-			print "Subj: " + mailItem.Subject
-			print "Body: " + mailItem.Body.encode('ascii', 'ignore')
-			print "========"
+			print("Subj: " + mailItem.Subject)
+			print("Body: " + mailItem.Body.encode('ascii', 'ignore'))
+			print("========")
 
 
 class MailBot():
@@ -198,7 +198,7 @@ if __name__ == "__main__":
 		To=["xyz@abc.com", "xyz@abc.com"],
 		CC=["xyz@abc.com", "xyz@abc.com"],
 		BCC=["xyz@abc.com", "xyz@abc.com"],
-		Attachments=["D:\xyz\abc\foo.txt"]
+		Attachments=["D:\\xyz\\abc\\foo.txt"]
 	)
 
 	# MailBot().ForwardMail(

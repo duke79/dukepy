@@ -1,5 +1,3 @@
-import datetime
-import traceback
 from enum import Enum
 
 from sqlalchemy import create_engine, Column, DateTime, func, Integer, BigInteger, String
@@ -8,8 +6,8 @@ from sqlalchemy.exc import DatabaseError
 from flask_sqlalchemy import Model
 from sqlalchemy.orm import sessionmaker
 
-from app import Config
-from app.utils.traces import print_exception_traces
+from dukepy.config import Config
+from dukepy.traces import print_exception_traces
 
 
 class DBType(Enum):

@@ -3,8 +3,8 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from app.data.config import Config
-from app.data.tables.alchemy_base import AlchemyBase, db_uri, db_session
+from dukepy.config import Config
+from dukepy.sql_alchemy.tables.alchemy_base import AlchemyBase, db_uri, db_session
 
 config = Config()
 
@@ -20,4 +20,6 @@ db = SQLAlchemy(app, model_class=AlchemyBase)
 # db.create_all() # No use until the model classes are imported. Use scripts.create_db_schema instead.
 
 """ Views """
-from app.views import ...
+# from app.views import
+
+...

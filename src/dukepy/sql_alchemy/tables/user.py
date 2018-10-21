@@ -1,7 +1,7 @@
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import expression
 
-from app import db
+from dukepy.sql_alchemy.app import db
 from sqlalchemy.dialects.mysql import INTEGER
 
 
