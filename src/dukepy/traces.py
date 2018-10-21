@@ -1,5 +1,5 @@
 import traceback
-from .config import Config
+from dukepy.config import Config
 
 
 def print_exception_traces(e):
@@ -8,3 +8,11 @@ def print_exception_traces(e):
         print(traceback.format_exc())
     else:
         print(e)
+
+
+if __name__ == "__main__":
+    mydict = dict()
+    try:
+        print(mydict["sdf"])
+    except Exception as e:
+        print_exception_traces(e)

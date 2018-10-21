@@ -68,4 +68,6 @@ if __name__ == "__main__":
 
 
 	low, high = Converge(-28, 50, check_validity).run()
+	print(low)
+	print(high)
 	pass

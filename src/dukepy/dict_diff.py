@@ -51,3 +51,19 @@ def dict_diff(d1, d2,
                 d1[k] = d2[k]
 
     return ret
+
+
+if __name__ == "__main__":
+    dictionary_1 = {"abc": "value_abc",
+                    "prs": "value_prs"}
+    dictionary_2 = {"abc": "value_abc",
+                    "xyz": "value_xyz"}
+    dict_diff(dictionary_1, dictionary_2)
+    print(dictionary_1)
+    print(dictionary_2)
+
+    dict_diff(dictionary_1, dictionary_2,
+              udpate_added_keys=True)
+
+    print(dictionary_1)
+    print(dictionary_2)
