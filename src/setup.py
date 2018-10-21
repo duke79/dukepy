@@ -12,7 +12,7 @@ setuptools.setup(name='dukepy',
                  description='A useful collection of utilities',
                  long_description=long_description,
                  long_description_content_type="text/markdown",
-                 version='0.0.5',
+                 version='0.0.7',
                  url='https://github.com/duke79/libpython',
                  author='Pulkit Singh',
                  author_email='pulkitsingh01@gmail.com',
@@ -24,8 +24,7 @@ setuptools.setup(name='dukepy',
                  ],
                  packages=setuptools.find_packages(),
                  install_requires=[
-                     'colorama',
-                     'enum'
+                     'colorama'
                  ],
                  entry_points={
                      'console_scripts': [
