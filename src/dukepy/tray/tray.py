@@ -10,6 +10,8 @@
 
 import os
 import win32api
+import win32ui
+
 import win32con
 import win32gui_struct
 from past.types import basestring
@@ -177,7 +179,7 @@ class SysTrayIcon(object):
                                                                 hSubMenu=submenu)
                 win32gui.InsertMenuItem(menu, 0, 1, item)
 
-    def prep_menu_icon(self, icon):
+    def prep_menu_icon_old(self, icon):
         # First load the icon.
         ico_x = win32api.GetSystemMetrics(win32con.SM_CXSMICON)
         ico_y = win32api.GetSystemMetrics(win32con.SM_CYSMICON)
@@ -199,6 +201,34 @@ class SysTrayIcon(object):
         win32gui.DeleteDC(hdcBitmap)
 
         return hbm
+
+    def prep_menu_icon(self, icon):
+        """
+        Ref: https://stackoverflow.com/a/45890829/973425
+        :param icon:
+        :return:
+        """
+        # First load the icon.
+        ico_x = win32api.GetSystemMetrics(win32con.SM_CXSMICON)
+        ico_y = win32api.GetSystemMetrics(win32con.SM_CYSMICON)
+        hIcon = win32gui.LoadImage(0, icon, win32con.IMAGE_ICON, ico_x, ico_y, win32con.LR_LOADFROMFILE)
+
+        hwndDC = win32gui.GetWindowDC(self.hwnd)
+        dc = win32ui.CreateDCFromHandle(hwndDC)
+        memDC = dc.CreateCompatibleDC()
+        iconBitmap = win32ui.CreateBitmap()
+        iconBitmap.CreateCompatibleBitmap(dc, ico_x, ico_y)
+        oldBmp = memDC.SelectObject(iconBitmap)
+        brush = win32gui.GetSysColorBrush(win32con.COLOR_MENU)
+
+        win32gui.FillRect(memDC.GetSafeHdc(), (0, 0, ico_x, ico_y), brush)
+        win32gui.DrawIconEx(memDC.GetSafeHdc(), 0, 0, hIcon, ico_x, ico_y, 0, 0, win32con.DI_NORMAL)
+
+        memDC.SelectObject(oldBmp)
+        memDC.DeleteDC()
+        win32gui.ReleaseDC(self.hwnd, hwndDC)
+
+        return iconBitmap.GetHandle()
 
     def command(self, hwnd, msg, wparam, lparam):
         id = win32gui.LOWORD(wparam)
