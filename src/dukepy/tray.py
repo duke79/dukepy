@@ -22,7 +22,7 @@ except ImportError:
     import win32gui
 
 
-class SysTrayIcon(object):
+class Tray(object):
     QUIT = 'QUIT'
     SPECIAL_ACTIONS = [QUIT]
 
@@ -89,7 +89,7 @@ class SysTrayIcon(object):
             if callable(option_action) or option_action in self.SPECIAL_ACTIONS:
                 self.menu_actions_by_id.add((self._next_action_id, option_action))
                 result.append(menu_option + (self._next_action_id,))
-            elif non_string_iterable(option_action):
+            elif self.non_string_iterable(option_action):
                 result.append((option_text,
                                option_icon,
                                self._add_ids_to_menu_options(option_action),
@@ -241,14 +241,14 @@ class SysTrayIcon(object):
         else:
             menu_action(self)
 
-
-def non_string_iterable(obj):
-    try:
-        iter(obj)
-    except TypeError:
-        return False
-    else:
-        return not isinstance(obj, basestring)
+    @staticmethod
+    def non_string_iterable(obj):
+        try:
+            iter(obj)
+        except TypeError:
+            return False
+        else:
+            return not isinstance(obj, basestring)
 
 
 # Minimal self test. You'll need a bunch of ICO files in the current working
@@ -285,4 +285,4 @@ if __name__ == '__main__':
         print('Bye, then.')
 
 
-    SysTrayIcon(next(icons), hover_text, menu_options, on_quit=bye, default_menu_index=1)
+    Tray(next(icons), hover_text, menu_options, on_quit=bye, default_menu_index=1)
