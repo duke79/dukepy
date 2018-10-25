@@ -1,11 +1,11 @@
-def dict_diff(d1, d2,
+def dict_diff(dict_target, dict_source,
 			  udpate_modified_keys=False,
 			  udpate_added_keys=False,
 			  udpate_removed_keys=False,
 			  path=""):
 	"""
-	:param d1:
-	:param d2:
+	:param dict_target: The dictionary to be modified
+	:param dict_source: The dictionary to be compared with
 	:param udpate_modified_keys:
 	:param udpate_added_keys:
 	:param udpate_removed_keys:
@@ -13,22 +13,22 @@ def dict_diff(d1, d2,
 	:return: True if at least one difference.
 	"""
 	ret = False
-	for k in list(d1.keys()):
-		if not k in d2:
+	for k in list(dict_target.keys()):
+		if not k in dict_source:
 			ret = True
 			print(path, ":")
 			# print(k + " as key not in d2", "\n")
-			print(" - ", k, " : ", d1[k])
+			print(" - ", k, " : ", dict_target[k])
 			if udpate_removed_keys:
-				d1.pop(k)
+				dict_target.pop(k)
 		else:
-			if type(d1[k]) is dict:
+			if type(dict_target[k]) is dict:
 				if path == "":
 					local_path = k
 				else:
 					local_path = path + "->" + k
 
-				res = dict_diff(d1[k], d2[k],
+				res = dict_diff(dict_target[k], dict_source[k],
 								udpate_modified_keys=udpate_modified_keys,
 								udpate_added_keys=udpate_added_keys,
 								udpate_removed_keys=udpate_removed_keys,
@@ -36,20 +36,20 @@ def dict_diff(d1, d2,
 				if not ret:
 					ret = res
 			else:
-				if d1[k] != d2[k]:
+				if dict_target[k] != dict_source[k]:
 					# ret = True
 					print(path, ":")
-					print(" - ", k, " : ", d1[k])
-					print(" + ", k, " : ", d2[k])
+					print(" - ", k, " : ", dict_target[k])
+					print(" + ", k, " : ", dict_source[k])
 					if udpate_modified_keys:
-						d1[k] = d2[k]
-	for k in list(d2.keys()):
-		if not k in d1:
+						dict_target[k] = dict_source[k]
+	for k in list(dict_source.keys()):
+		if not k in dict_target:
 			ret = True
 			print(path, ":")
-			print(" + ", k, " : ", d2[k])
+			print(" + ", k, " : ", dict_source[k])
 			if udpate_added_keys:
-				d1[k] = d2[k]
+				dict_target[k] = dict_source[k]
 
 	return ret
 
