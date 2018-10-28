@@ -117,7 +117,15 @@ def observe_over_sessions(path=os.path.curdir):
     observer.join()
 
 
+def compare_dirs(src_path, dest_path):
+    src_snap = DirectorySnapshot(src_path)
+    dest_path = DirectorySnapshot(dest_path)
+    diff = DirectorySnapshotDiff(src_snap, dest_path)
+    print(diff.files_modified)
+
+
 if __name__ == "__main__":
     path = sys.argv[1] if len(sys.argv) > 1 else '.'
     # observe_realtime(path)
-    observe_over_sessions(path)
+    # observe_over_sessions(path)
+    compare_dirs("C:\\New folder\\temp", "C:\\temp")
