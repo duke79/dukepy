@@ -76,17 +76,19 @@ class PersistantObserver(Observer):
         Observer.start(self, *args, **kwargs)
 
     def stop(self, *args, **kwargs):
-        snapshots = {handler.path: DirectorySnapshot(handler.path) for handler in self._handlers.keys()}
-        with open(self._filename, 'wb') as f:
-            pickle.dump(snapshots, f, self._protocol)
-        Observer.stop(self, *args, **kwargs)
+        try:
+            snapshots = {handler.path: DirectorySnapshot(handler.path) for handler in self._handlers.keys()}
+            with open(self._filename, 'wb') as f:
+                pickle.dump(snapshots, f, self._protocol)
+            Observer.stop(self, *args, **kwargs)
+        except PermissionError as e:
+            print(e)
 
 
-def observe_realtime():
+def observe_realtime(path=os.path.curdir):
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s - %(message)s',
                         datefmt='%Y-%m-%d %H:%M:%S')
-    path = sys.argv[1] if len(sys.argv) > 1 else '.'
     event_handler = LoggingEventHandler()
     observer = Observer()
     observer.schedule(event_handler, path, recursive=True)
@@ -99,11 +101,11 @@ def observe_realtime():
     observer.join()
 
 
-def observe_over_sessions():
+def observe_over_sessions(path=os.path.curdir):
     logging.basicConfig(level=logging.DEBUG)
     event_handler = LoggingEventHandler()
     observer = PersistantObserver(save_to='C:\\temp\\test.pickle', protocol=-1)
-    observer.schedule(event_handler, path='C:\\Dev\\libpython\\src', recursive=True)
+    observer.schedule(event_handler, path=path, recursive=True)
     observer.start()
     # observer.join()
     observer.stop()
@@ -116,5 +118,6 @@ def observe_over_sessions():
 
 
 if __name__ == "__main__":
-    # observe_realtime()
-    observe_over_sessions()
+    path = sys.argv[1] if len(sys.argv) > 1 else '.'
+    # observe_realtime(path)
+    observe_over_sessions(path)
