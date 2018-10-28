@@ -12,6 +12,7 @@ colorama = "*"
 flask-sqlalchemy = "*"
 speechrecognition = "*"
 "cmd2" = "*"
+watchdog = "*"
 
 [dev-packages]
 
