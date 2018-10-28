@@ -1,13 +1,15 @@
 import os
-import subprocess
 import sys
-import cmd2
+# import cmd2
 import cmd
 
 
 class Shell(cmd.Cmd):
     intro = 'Welcome to shell\n'
-    prompt = os.path.abspath(os.path.curdir) + ">"
+
+    def __init__(self):
+        super().__init__()
+        self.prompt = os.path.abspath(os.path.curdir) + ">"
 
     def default(self, line):  # this method will catch all commands
         # subprocess.call(line, shell=True)
@@ -28,7 +30,7 @@ class Shell(cmd.Cmd):
             os.chdir(args[0])
         except Exception as e:
             print(os.path.abspath(os.path.curdir))
-        Shell.prompt = os.path.abspath(os.path.curdir) + ">"
+        self.prompt = os.path.abspath(os.path.curdir) + ">"
 
     def complete_cd(self, text, line, begidx, endidx):
         return [filename for filename in os.listdir('.') if filename.startswith(text)]
