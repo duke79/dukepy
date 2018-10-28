@@ -11,6 +11,7 @@ class Shell(cmd.Cmd):
     def __init__(self):
         super().__init__()
         self.prompt = os.path.abspath(os.path.curdir) + ">"
+        self.history = []
 
     def default(self, line):  # this method will catch all commands
         # subprocess.call(line, shell=True)
@@ -25,6 +26,10 @@ class Shell(cmd.Cmd):
         files = [filename for filename in os.listdir('.') if filename.startswith(text)]
         return commands + files
 
+    def precmd(self, line):
+        self.history.append(line)
+        return line
+
     def do_cd(self, line):
         args = str(line).split(" ")
         try:
@@ -37,12 +42,20 @@ class Shell(cmd.Cmd):
         return [filename for filename in os.listdir('.') if filename.startswith(text)]
 
     def do_exit(self, line):
+        # print(self.history)
+        # input("Press a key ...")
         os.kill(os.getppid(), signal.SIGTERM)  # maybe required only with pipenv?
         return True
 
 
 if __name__ == '__main__':
+    shell = None
     if len(sys.argv) > 1:
-        Shell().cmdloop()
+        shell = Shell()
+        shell.cmdloop()
     else:
         os.system("start cmd /k python " + __file__ + " new")
+
+    if shell:
+        shell.stdin = "dir\n"
+        shell.stdout = "dir\n"
