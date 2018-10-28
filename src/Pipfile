@@ -11,6 +11,7 @@ colorama = "*"
 "pypiwin32" = "*"
 flask-sqlalchemy = "*"
 speechrecognition = "*"
+"cmd2" = "*"
 
 [dev-packages]
 

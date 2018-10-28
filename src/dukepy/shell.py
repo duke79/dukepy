@@ -1,12 +1,13 @@
 import os
 import subprocess
 import sys
-from cmd import Cmd
+import cmd2
+import cmd
 
 
-class Pirate(Cmd):
+class Shell(cmd.Cmd):
     intro = 'Welcome to shell\n'
-    prompt = 'platform> '
+    prompt = os.path.abspath(os.path.curdir) + ">"
 
     def default(self, line):  # this method will catch all commands
         # subprocess.call(line, shell=True)
@@ -18,11 +19,11 @@ class Pirate(Cmd):
                 os.system(line)
         else:
             os.system(line)
-        pass
+        Shell.prompt = os.path.abspath(os.path.curdir) + ">"
 
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
-        Pirate().cmdloop()
+        Shell().cmdloop()
     else:
         os.system("start cmd /k python " + __file__ + " new")
