@@ -14,6 +14,7 @@ speechrecognition = "*"
 "cmd2" = "*"
 watchdog = "*"
 "win10toast" = "*"
+zroya = "*"
 
 [dev-packages]
 
