@@ -10,6 +10,7 @@ twine = "*"
 colorama = "*"
 "pypiwin32" = "*"
 flask-sqlalchemy = "*"
+speechrecognition = "*"
 
 [dev-packages]
 
