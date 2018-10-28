@@ -11,15 +11,27 @@ class Shell(cmd.Cmd):
 
     def default(self, line):  # this method will catch all commands
         # subprocess.call(line, shell=True)
+        os.system(line)
+
+    def completedefault(self, text, line, begidx, endidx):
+        return [filename for filename in os.listdir('.') if filename.startswith(text)]
+
+    def completenames(self, text, *ignored):
+        dotext = 'do_' + text
+        commands = [a[3:] for a in self.get_names() if a.startswith(dotext)]
+        files = [filename for filename in os.listdir('.') if filename.startswith(text)]
+        return commands + files
+
+    def do_cd(self, line):
         args = str(line).split(" ")
-        if args[0] == "cd":
-            try:
-                os.chdir(args[1])
-            except Exception as e:
-                os.system(line)
-        else:
-            os.system(line)
+        try:
+            os.chdir(args[0])
+        except Exception as e:
+            print(os.path.abspath(os.path.curdir))
         Shell.prompt = os.path.abspath(os.path.curdir) + ">"
+
+    def complete_cd(self, text, line, begidx, endidx):
+        return [filename for filename in os.listdir('.') if filename.startswith(text)]
 
 
 if __name__ == '__main__':
