@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9c6167bfca7104438d2a39f3698fea1d95cb568a86ac9ce907e1493f16a9e772"
+            "sha256": "f6ada245da5c1a2991fce92b1f30749b2f0bb99853949354da25a89122d7ad6c"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -292,6 +292,13 @@
             ],
             "index": "pypi",
             "version": "==0.32.2"
+        },
+        "win10toast": {
+            "hashes": [
+                "sha256:44e5afa1001de88a0ee533872231521fa67c7d144f39974089af242d9c4620a4"
+            ],
+            "index": "pypi",
+            "version": "==0.9"
         }
     },
     "develop": {}

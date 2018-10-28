@@ -13,6 +13,7 @@ flask-sqlalchemy = "*"
 speechrecognition = "*"
 "cmd2" = "*"
 watchdog = "*"
+"win10toast" = "*"
 
 [dev-packages]
 
