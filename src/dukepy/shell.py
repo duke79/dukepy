@@ -14,8 +14,11 @@ class Shell(cmd.Cmd):
         self.history = []
 
     def default(self, line):  # this method will catch all commands
+        ret = ""
         # subprocess.call(line, shell=True)
-        os.system(line)
+        # os.system(line)
+        ret = os.popen(line).read()
+        return ret
 
     def completedefault(self, text, line, begidx, endidx):
         return [filename for filename in os.listdir('.') if filename.startswith(text)]
@@ -30,13 +33,24 @@ class Shell(cmd.Cmd):
         self.history.append(line)
         return line
 
+    def postcmd(self, stop, line):
+        # print(line)
+        print(stop)  # Print output of the command
+
+    def preloop(self):
+        # self.cmdqueue.append("dir")  # Startup commands
+        pass
+
     def do_cd(self, line):
+        ret = ""
+
         args = str(line).split(" ")
         try:
             os.chdir(args[0])
         except Exception as e:
-            print(os.path.abspath(os.path.curdir))
+            ret = os.path.abspath(os.path.curdir)
         self.prompt = os.path.abspath(os.path.curdir) + ">"
+        return ret
 
     def complete_cd(self, text, line, begidx, endidx):
         return [filename for filename in os.listdir('.') if filename.startswith(text)]
