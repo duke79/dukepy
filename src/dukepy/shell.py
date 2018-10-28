@@ -1,4 +1,5 @@
 import os
+import signal
 import sys
 # import cmd2
 import cmd
@@ -34,6 +35,10 @@ class Shell(cmd.Cmd):
 
     def complete_cd(self, text, line, begidx, endidx):
         return [filename for filename in os.listdir('.') if filename.startswith(text)]
+
+    def do_exit(self, line):
+        os.kill(os.getppid(), signal.SIGTERM)  # maybe required only with pipenv?
+        return True
 
 
 if __name__ == '__main__':
