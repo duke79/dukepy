@@ -1,6 +1,6 @@
 from enum import Enum
 
-from sqlalchemy import create_engine, Column, DateTime, func, Integer, BigInteger, String
+from sqlalchemy import create_engine, Column, DateTime, func, Integer, BigInteger, Text
 from sqlalchemy.dialects.postgresql import JSON, JSONB
 from sqlalchemy.exc import DatabaseError
 from flask_sqlalchemy import Model
@@ -64,14 +64,12 @@ class AlchemyBase(Model):
     ref: https://chase-seibert.github.io/blog/2016/03/31/flask-sqlalchemy-sessionless.html
     """
 
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     if db_type == DBType.sqlite:
-        id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
-        json_data = Column(String, nullable=True)
+        json_data = Column(Text, nullable=True)
     if db_type == DBType.mysql:
-        id = Column(BigInteger, primary_key=True, autoincrement=True, nullable=False)
-        json_data = Column(String, nullable=True)
+        json_data = Column(Text, nullable=True)
     if db_type == DBType.postgres:
-        id = Column(BigInteger, primary_key=True, autoincrement=True, nullable=False)
         json_data = Column(JSONB, nullable=True)
 
     # https://stackoverflow.com/a/12155686/973425
