@@ -22,5 +22,5 @@ migrate = Migrate(app, db)
 
 """ Views """
 # from app.views import
-
+from .views import *
 ...
