@@ -1,56 +1,45 @@
 import fire
 
 
-def another_really_do_something(with_a_twist=False):
+class X():
     """
-    another_really_do_something help
-    :param with_a_twist:
-    :return:
+    Help X
     """
 
-    if with_a_twist:
-        return "doing something with a twist"
-    return "doing something"
+    def __init__(self):
+        self.hello = "hello"
 
-class ObjToDoSomething():
+    def X_call(self):
+        return "X_call"
+
+
+class Y():
     """
-    ObjToDoSomething help
+    Help Y
     """
 
-    def really_do_something(self, with_a_twist=False):
-        """
-        really do something help
-        :param with_a_twist:
-        :return:
-        """
-
-        if with_a_twist:
-            return "doing something with a twist"
-        return "doing something"
+    def __init__(self):
+        self.X = X
 
 
-class RootCmd():
-    """This is THE cli"""
-    do_something_else = "doing something else"
+class Z():
+    """
+    Help Z
+    """
 
-    def __init__(self, init_like=10):
-        self.do_something_else_entirely = "doing something else entirely"
-        self.initialized_like = init_like
+    def __init__(self):
+        self.Y = Y
 
-    def do_something(self):
+    def Z_call(self, arg1=1, arg2=2, arg3=3):
         """
-        do something help
-        :return:
+        Z call help
+        :param arg1: To set arg1
+        :param arg2: To set arg2
+        :param arg3: To set arg3
+        :return: a string "z_call"
         """
-        return ObjToDoSomething
-
-    def another_do_something(self):
-        """
-        another_do_something help
-        :return:
-        """
-        return another_really_do_something()
+        return "Z_call"
 
 
 if __name__ == "__main__":
-    fire.Fire(RootCmd)
+    fire.Fire()
