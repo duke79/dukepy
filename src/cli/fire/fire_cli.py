@@ -3,8 +3,10 @@ import sys
 
 import fire
 
+
 def json_dump(obj):
     print(json.dumps(obj, indent=4, sort_keys=True, default=str))  # https://stackoverflow.com/a/11875813/973425
+
 
 class Root():
     """
@@ -14,6 +16,18 @@ class Root():
 
     def __init__(self):
         pass
+
+    def dummy_json(self):
+        obj = {
+            "key1": [
+                "val1",
+                {
+                    "key2": "val2",
+                    "key3": 3.6
+                }
+            ]
+        }
+        json_dump(obj)
 
     def echo(self, arg):
         """
