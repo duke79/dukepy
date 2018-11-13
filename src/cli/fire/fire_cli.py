@@ -1,57 +1,38 @@
+import json
 import sys
 
 import fire
 
 
-class X():
+class Root():
     """
-    Help X
+    Root
     """
+    cmd_history = []
 
     def __init__(self):
-        self.hello = "hello"
+        pass
 
-    def X_call(self):
-        return "X_call"
-
-
-class Y():
-    """
-    Help Y
-    """
-
-    def __init__(self):
-        self.X = X
+    def history(self):
+        for cmd in Root.cmd_history:
+            print(json.dumps(cmd, indent=4, sort_keys=True, default=str))  # https://stackoverflow.com/a/11875813/973425
 
 
-class Z():
-    """
-    Help Z
-    """
-
-    def __init__(self):
-        self.Y = Y
-
-    def Z_call(self, arg1=1, arg2=2, arg3=3):
-        """
-        Z call help
-        :param arg1: To set arg1
-        :param arg2: To set arg2
-        :param arg3: To set arg3
-        :return: a string "z_call"
-        """
-        return "Z_call"
-
-
-if __name__ == "__main__":
+def main():
     if len(sys.argv) > 1:
         args = ""
         for arg in sys.argv[1:]:
             args += " " + arg
-        fire.Fire(Z, args)
+        fire.Fire(Root, args)
+        Root.cmd_history.append(args)
     else:
         print("no args...")
 
     while True:
         cmd = input()
-        fire.Fire(Z, cmd)
+        fire.Fire(Root, cmd)
+        Root.cmd_history.append(cmd)
+
+
+if __name__ == "__main__":
+    main()
