@@ -1,3 +1,5 @@
+import sys
+
 import fire
 
 
@@ -42,4 +44,14 @@ class Z():
 
 
 if __name__ == "__main__":
-    fire.Fire()
+    if len(sys.argv) > 1:
+        args = ""
+        for arg in sys.argv[1:]:
+            args += " " + arg
+        fire.Fire(Z, args)
+    else:
+        print("no args...")
+
+    while True:
+        cmd = input()
+        fire.Fire(Z, cmd)
