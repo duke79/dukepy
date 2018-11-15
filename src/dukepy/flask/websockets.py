@@ -1,10 +1,21 @@
+import sys
+import threading
+
+from io import StringIO
+import asyncio
+from multiprocessing import Process
+
+import fire
 from flask_socketio import emit, Namespace
 
+from cli.fire.fire_cli import Root, fire_task_wrapper
 from dukepy.flask import socketio
+from dukepy.processify import processify
 
 
 @socketio.on('my event', namespace='/test')
 def test_message(message):
+    print(message)
     emit('my response', {'data': message['data']})
 
 
@@ -25,13 +36,35 @@ def test_disconnect():
 
 class SocketNamespace(Namespace):
     def on_connect(self):
-        pass
+        emit('my response', {'data': 'welcome!'})
 
     def on_disconnect(self):
-        pass
+        print('Client disconnected')
 
-    def on_my_event(self, data):
-        emit('my_response', data)
+    def on_message(self, message):
+        print(message)
+        emit('my response', {'data': 'custom message'})
+        fire_task_wrapper(message, emit)
+
+    def on_echo(self, message):
+        print(message)
+        emit('my response', {'data': message['data']})
 
 
 socketio.on_namespace(SocketNamespace('/custom'))
+
+
+# socketio.emit("my response", "asynco") #has no effect
+
+
+## USELESS
+# async def async_loop():
+#     for i in range(100):
+#         await asyncio.sleep(3)
+#         socketio.emit("my response", "asynco")
+#         print("asynco")
+#
+#
+# loop = asyncio.get_event_loop()
+# # loop.run_until_complete(async_loop())
+# # loop.close()
