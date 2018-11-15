@@ -16,6 +16,8 @@ watchdog = "*"
 "win10toast" = "*"
 zroya = "*"
 fire = "*"
+flask-socketio = "*"
+flask-cors = "*"
 
 [dev-packages]
 

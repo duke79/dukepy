@@ -1,5 +1,7 @@
 import json
 import sys
+import threading
+from io import StringIO
 
 import fire
 
@@ -56,6 +58,46 @@ def main():
         cmd = input()
         fire.Fire(Root, cmd)
         Root.cmd_history.append(cmd)
+
+
+def fire_task_wrapper(cmd, emit):
+    class TeeIn(StringIO):
+        def write(self, s):
+            emit('my response', {'stdin': s})
+            StringIO.write(self, s)
+            sys.__stdin__.write(s)
+
+    class TeeOut(StringIO):
+        def write(self, s):
+            emit('my response', {'stdout': s})
+            StringIO.write(self, s)
+            sys.__stdout__.write(s)
+
+    class TeeErr(StringIO):
+        def write(self, s):
+            emit('my response', {'stderr': s})
+            StringIO.write(self, s)
+            sys.__stderr__.write(s)
+
+    # @processify
+    def fire_task(command):
+        # Save everything that would otherwise go to stdout.
+        stdin = TeeIn()
+        sys.stdin = stdin
+
+        stdout = TeeOut()
+        sys.stdout = stdout
+
+        stderr = TeeErr()
+        sys.stderr = stderr
+
+        fire.Fire(Root, command)
+
+    pass
+    # fire_task(cmd)
+    t = threading.Thread(name='child procs', target=fire_task(cmd))
+    t.start()
+    pass
 
 
 if __name__ == "__main__":
