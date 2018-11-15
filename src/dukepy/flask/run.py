@@ -1,20 +1,11 @@
-import os
-import sys
-
-from app import app, db
-from flask_cors import CORS, cross_origin
-from app.data.config import Config
-from werkzeug.contrib.fixers import ProxyFix
-
-from scripts.create_db_schema import initDB
+from dukepy.config import Config
+from dukepy.flask import app
 
 config = Config()
 
-'''Run app'''
-CORS(app, origins=config["allowed_domains"])  # Allow cross-domain
-app.wsgi_app = ProxyFix(app.wsgi_app)
 
-initDB()
+# from scripts.create_db_schema import initDB
+# initDB()
 
 if __name__ == '__main__':
     debug = config["debug"]
