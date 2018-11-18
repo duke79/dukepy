@@ -1,10 +1,10 @@
-from .incident_report import IncidentReport
+from .person import Person
 from data.common.base import db_session
 
 
 def create_people():
-	bruno = IncidentReport("Bruno Krebs")
-	john = IncidentReport("John Doe")
+	bruno = Person("Bruno Krebs")
+	john = Person("John Doe")
 
 	session = db_session()
 	session.add(bruno)
@@ -15,7 +15,7 @@ def create_people():
 
 def get_people():
 	session = db_session()
-	people_query = session.query(IncidentReport)
+	people_query = session.query(Person)
 	session.close()
 	return people_query.all()
 
