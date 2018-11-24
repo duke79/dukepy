@@ -25,34 +25,35 @@ class Task(Process):
 
     def run(self):
         if self._predecessor:
-            while not self._events[self._predecessor].is_set():
+            while not self._events[self._predecessor.uid].is_set():
                 pass
 
         self._target(*self._args)
         self._events[self.uid].set()
 
+    def terminate(self):
+        self._events[self.uid].set()
+        Process.terminate(self)
+
     def run_after(self, p):
         self._predecessor = p
 
 
-def task1(args):
-    print("task1")
-    print(args)
-
-
-def task2(args):
-    print("task2")
+def task_cb(args):
     print(args)
 
 
 def main():
-    p1 = Task(target=task1, args=("hello",))
-    p2 = Task(target=task2, args=("hello",))
-    p1.run_after(p2.uid)
+    p1 = Task(target=task_cb, args=("task1",))
+    p2 = Task(target=task_cb, args=("task2",))
+    p3 = Task(target=task_cb, args=("task3",))
+    p1.run_after(p2)
+    p2.run_after(p3)
     p1.start()
     p2.start()
+    p3.start()
     # p1.terminate()
-    # p2.terminate()
+    p2.terminate()
 
 
 if __name__ == "__main__":
