@@ -1,20 +1,24 @@
 import uuid
 from multiprocessing import Process, Event
 
-all_tasks = []
-events = {}
+from dukepy.singleton import Singleton
+
+
+class Ledger(metaclass=Singleton):
+    all_tasks = []
+    events = {}
 
 
 class Task(Process):
     def __init__(self, *args, **kwargs):
         Process.__init__(self, *args, **kwargs)
-        all_tasks.append(self)
+        Ledger().all_tasks.append(self)
 
         self._predecessor = None
         self.uid = uuid.uuid4()
-        events[self.uid] = Event()
-        self._events = events
-        print(events)
+
+        Ledger().events[self.uid] = Event()
+        self._events = Ledger().events  # Keeping a copy ro access in Run()
 
         self._target = kwargs["target"]
         self._args = kwargs["args"]
