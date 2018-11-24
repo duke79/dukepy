@@ -67,8 +67,8 @@ def task_cb(args):
 
 
 def main():
-    p1 = Task(target=task_cb, args=("task1",), logs_file="sab.oo")
-    p2 = Task(target=task_cb, args=("task2",), logs_file="sab.oo")
+    p1 = Task(target=task_cb, args=("task1",), logs_file="sab1.oo")
+    p2 = Task(target=task_cb, args=("task2",), logs_file="sab2.oo")
     p3 = Task(target=task_cb, args=("task3",))
     p1.run_after(p2)
     p2.run_after(p3)
@@ -76,7 +76,20 @@ def main():
     p2.start()
     p3.start()
     # p1.terminate()
-    p2.terminate()
+    p2.terminate()  # Makes p1 run in advance
+
+    # Print logs
+    # p1.join()
+
+    for task in Ledger().all_tasks:
+        while task.is_alive():
+            pass
+        try:
+            with open(Ledger().logs_files[task.uid], "r") as f:
+                print(task.is_alive())
+                print(f.read())
+        except Exception as e:
+            pass
 
 
 if __name__ == "__main__":
