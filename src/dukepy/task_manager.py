@@ -58,8 +58,9 @@ class Task(Process):
         self._events[self.uid].set()
         Process.terminate(self)
 
-    def run_after(self, p):
+    def start_after(self, p):
         self._predecessor = p
+        self.start()
 
 
 def task_cb(args):
@@ -70,13 +71,14 @@ def main():
     p1 = Task(target=task_cb, args=("task1",), logs_file="sab1.oo")
     p2 = Task(target=task_cb, args=("task2",), logs_file="sab2.oo")
     p3 = Task(target=task_cb, args=("task3",))
-    p1.run_after(p2)
-    p2.run_after(p3)
-    p1.start()
-    p2.start()
+    p1.start_after(p2)
+    p2.start_after(p3)
+    # p1.start()
+    # p2.start()
     p3.start()
     # p1.terminate()
-    p2.terminate()  # Makes p1 run in advance
+    # p2.terminate()  # Makes p1 run in advance
+    # p3.terminate()
 
     # Print logs
     # p1.join()
