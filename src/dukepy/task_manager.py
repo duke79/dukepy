@@ -16,6 +16,9 @@ class Task(Process):
         # A unique id goes a long way
         self.uid = uuid.uuid4()
 
+        # No harm in having a human readable identifier
+        self.tag = kwargs.pop("tag", "Anonymous task")
+
         # Logs file path
         Ledger().logs_files[self.uid] = kwargs.pop("logs_file", str(self.uid) + ".out")
         self._logs_files = Ledger().logs_files
@@ -58,8 +61,9 @@ class Task(Process):
         self._events[self.uid].set()
         Process.terminate(self)
 
-    def run_after(self, p):
+    def start_after(self, p):
         self._predecessor = p
+        self.start()
 
 
 def task_cb(args):
@@ -67,16 +71,17 @@ def task_cb(args):
 
 
 def main():
-    p1 = Task(target=task_cb, args=("task1",), logs_file="sab1.oo")
+    p1 = Task(target=task_cb, args=("task1",), logs_file="sab1.oo", tag="Task1_tag")
     p2 = Task(target=task_cb, args=("task2",), logs_file="sab2.oo")
     p3 = Task(target=task_cb, args=("task3",))
-    p1.run_after(p2)
-    p2.run_after(p3)
-    p1.start()
-    p2.start()
+    p1.start_after(p2)
+    p2.start_after(p3)
+    # p1.start()
+    # p2.start()
     p3.start()
     # p1.terminate()
-    p2.terminate()  # Makes p1 run in advance
+    # p2.terminate()  # Makes p1 run in advance
+    # p3.terminate()
 
     # Print logs
     # p1.join()
@@ -88,6 +93,7 @@ def main():
             with open(Ledger().logs_files[task.uid], "r") as f:
                 print(task.is_alive())
                 print(f.read())
+                print(task.tag)
         except Exception as e:
             pass
 
