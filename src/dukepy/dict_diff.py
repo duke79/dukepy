@@ -16,9 +16,9 @@ def dict_diff(dict_target, dict_source,
 	for k in list(dict_target.keys()):
 		if not k in dict_source:
 			ret = True
-			print(path, ":")
-			# print(k + " as key not in d2", "\n")
-			print(" - ", k, " : ", dict_target[k])
+			# print(path, ":")
+			# # print(k + " as key not in d2", "\n")
+			# print(" - ", k, " : ", dict_target[k])
 			if udpate_removed_keys:
 				dict_target.pop(k)
 		else:
@@ -38,16 +38,16 @@ def dict_diff(dict_target, dict_source,
 			else:
 				if dict_target[k] != dict_source[k]:
 					# ret = True
-					print(path, ":")
-					print(" - ", k, " : ", dict_target[k])
-					print(" + ", k, " : ", dict_source[k])
+					# print(path, ":")
+					# print(" - ", k, " : ", dict_target[k])
+					# print(" + ", k, " : ", dict_source[k])
 					if udpate_modified_keys:
 						dict_target[k] = dict_source[k]
 	for k in list(dict_source.keys()):
 		if not k in dict_target:
 			ret = True
-			print(path, ":")
-			print(" + ", k, " : ", dict_source[k])
+			# print(path, ":")
+			# print(" + ", k, " : ", dict_source[k])
 			if udpate_added_keys:
 				dict_target[k] = dict_source[k]
 
