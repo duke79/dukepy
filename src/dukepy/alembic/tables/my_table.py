@@ -6,7 +6,7 @@ from data.common import Base
 from data.common.mixin import Mixin
 
 
-class IncidentReport(Mixin, Base):
+class MyTable(Mixin, Base):
 	name = Column(String(200), nullable=True)
 	trigram = Column(String(200), nullable=True)
 	machine = Column(String(200), nullable=True)
