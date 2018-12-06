@@ -33,6 +33,8 @@ class Mixin(object):
 		return cls.__name__.lower()
 
 	def save(self):
+		setattr(self, "updated_at", func.now())  # server_onupdate failing for postgres
+
 		session = db_session()
 		local_object = session.merge(self)
 		session.add(local_object)
