@@ -5,7 +5,9 @@ Ref: https://stackoverflow.com/a/35211383/973425
 import os
 
 import alembic.config
+import sys
 
+from core.traces import print_exception_traces
 from data.common import db_uri
 from data.tables import *  # DON NOT REMOVE | Redundant import kept on purpose
 
@@ -41,5 +43,20 @@ def migrate(revision_name="new revision"):
 	alembic.config.main(argv=alembicArgs)
 
 
+@good_dir
+def print_db_uri(output_file):
+	with open(output_file, "w") as f:
+		f.write(db_uri[10:])
+
+
 if __name__ == "__main__":
-	migrate()
+	try:  # To print the path of sqlite db for sqlite_web
+		if "migrate" == sys.argv[1]:
+			migrate()
+		elif "upgrade" == sys.argv[1]:
+			upgrade()
+		else:
+			output_file = sys.argv[1]
+			print_db_uri(output_file)
+	except Exception as e:
+		print_exception_traces(e)
