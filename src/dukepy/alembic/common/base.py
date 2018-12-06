@@ -56,11 +56,12 @@ class DBSession():
 
 	def db_type(self):
 		db_type = DBType.sqlite  # Default
-		if "sqlite" == Config()["database"]["active"]:
+		active_db = Config()["database"]["active"]
+		if "sqlite" == active_db:
 			db_type = DBType.sqlite
-		if "mysql" == Config()["database"]["active"]:
+		if "mysql" == active_db:
 			db_type = DBType.mysql
-		if "postgres" == Config()["database"]["active"]:
+		if "postgres" == active_db:
 			db_type = DBType.postgres
 		return db_type
 
