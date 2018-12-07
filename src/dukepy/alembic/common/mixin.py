@@ -38,14 +38,15 @@ class Mixin(object):
 		session = db_session()
 		local_object = session.merge(self)
 		session.add(local_object)
-		# try:
-		self._flush()
-		session.commit()
-		# except DatabaseError as e:
-		#     code = e.orig.args[0]
-		#     if code == 1062:
-		#         raise
-		#     return None
+		try:
+			self._flush()
+			session.commit()
+		except DatabaseError as e:
+			code = e.orig.args[0]
+			if code == 1062:
+				raise
+			return None
+		session.connection().close()
 		return local_object
 
 	def update(self, **kwargs):
