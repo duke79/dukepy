@@ -28,7 +28,6 @@ class DBType(Enum):
 
 
 class DBSession():
-
 	def __init__(self):
 		pass
 
@@ -50,10 +49,6 @@ class DBSession():
 
 		return db_uri
 
-	def engine(self):
-		_engine = create_engine(self.uri())
-		return _engine
-
 	def db_type(self):
 		db_type = DBType.sqlite  # Default
 		active_db = Config()["database"]["active"]
@@ -69,12 +64,13 @@ class DBSession():
 _helper = DBSession()
 db_type = _helper.db_type()
 db_uri = _helper.uri()
+engine = create_engine(_helper.uri(), pool_size=50, max_overflow=0, pool_timeout=300)
 
 
 def _session_factory():
-	Base.metadata.create_all(_helper.engine())
+	Base.metadata.create_all(engine)
 
-	session = sessionmaker(bind=_helper.engine())()
+	session = sessionmaker(bind=engine)()
 	session._model_changes = {}
 	return session
 
