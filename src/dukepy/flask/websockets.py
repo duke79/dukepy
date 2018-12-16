@@ -54,7 +54,9 @@ class SocketNamespace(Namespace):
         print('Client disconnected')
 
     def on_fire(self, cmd, req_id=None):
+        emit('fireout', {'state': 'begin', 'req_id': req_id})
         fire_task_wrapper(cmd, emit, req_id)
+        emit('fireout', {'state': 'end', 'req_id': req_id})
 
     def on_echo(self, message):
         emit('my response', {'data': message['data']})
