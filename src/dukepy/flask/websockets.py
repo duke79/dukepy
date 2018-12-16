@@ -1,16 +1,7 @@
-import sys
-import threading
-
-from io import StringIO
-import asyncio
-from multiprocessing import Process
-
-import fire
 from flask_socketio import emit, Namespace
 
-from cli.fire.fire_cli import Root, fire_task_wrapper
+from dukepy.fire.fire_cli import fire_task_wrapper
 from dukepy.flask import socketio
-from dukepy.processify import processify
 
 
 @socketio.on('my event', namespace='/test')
@@ -52,7 +43,6 @@ class SocketNamespace(Namespace):
 
 
 socketio.on_namespace(SocketNamespace('/custom'))
-
 
 # socketio.emit("my response", "asynco") #has no effect
 
