@@ -8,7 +8,6 @@ def json_dump(obj):
 
 
 def abc(argument=""):
-    print(argument)
     return argument
 
 

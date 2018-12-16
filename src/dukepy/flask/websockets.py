@@ -32,29 +32,11 @@ class SocketNamespace(Namespace):
     def on_disconnect(self):
         print('Client disconnected')
 
-    def on_message(self, message):
-        print(message)
-        emit('my response', {'data': 'custom message'})
-        fire_task_wrapper(message, emit)
+    def on_fire(self, cmd):
+        fire_task_wrapper(cmd, emit)
 
     def on_echo(self, message):
-        print(message)
         emit('my response', {'data': message['data']})
 
 
-socketio.on_namespace(SocketNamespace('/custom'))
-
-# socketio.emit("my response", "asynco") #has no effect
-
-
-## USELESS
-# async def async_loop():
-#     for i in range(100):
-#         await asyncio.sleep(3)
-#         socketio.emit("my response", "asynco")
-#         print("asynco")
-#
-#
-# loop = asyncio.get_event_loop()
-# # loop.run_until_complete(async_loop())
-# # loop.close()
+socketio.on_namespace(SocketNamespace('/websocket'))

@@ -42,4 +42,8 @@ def config_defaults():
         }
     }
 
+    defaults["debug"] = True
+    defaults["stacktrace"] = True
+    defaults["allowed_domains"] = ["*"]
+
     return defaults
