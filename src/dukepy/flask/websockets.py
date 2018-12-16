@@ -39,9 +39,11 @@ class SocketNamespace(Namespace):
         handler_name = 'on_' + event
         print(handler_name)
         if not hasattr(self, handler_name):
-            # there is no handler for this event, so we ignore it
-            return
-        handler = getattr(self, handler_name)
+            # This is a custom event, let on_fire try to handle it with req_id
+            args = args + (event,)
+            handler = getattr(self, "on_fire")
+        else:
+            handler = getattr(self, handler_name)
         return self.socketio._handle_event(handler, event, self.namespace,
                                            *args)
 
@@ -51,11 +53,12 @@ class SocketNamespace(Namespace):
     def on_disconnect(self):
         print('Client disconnected')
 
-    def on_fire(self, cmd):
-        fire_task_wrapper(cmd, emit)
+    def on_fire(self, cmd, req_id=None):
+        fire_task_wrapper(cmd, emit, req_id)
 
     def on_echo(self, message):
         emit('my response', {'data': message['data']})
+
 
 
 socketio.on_namespace(SocketNamespace('/websocket'))

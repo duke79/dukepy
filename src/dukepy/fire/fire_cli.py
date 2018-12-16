@@ -46,12 +46,12 @@ def main():
     pass
 
 
-def fire_task_wrapper(cmd, emit):
+def fire_task_wrapper(cmd, emit, req_id=None):
     class TeeIn(StringIO):
         def write(self, s):
             # print("fire out" + str(s))
             try:
-                emit('fireout', {'stdin': s})
+                emit('fireout', {'stdin': s, 'req_id': req_id})
             # StringIO.write(self, s)
             # sys.__stdin__.write(s)
             except Exception as e:
@@ -62,7 +62,7 @@ def fire_task_wrapper(cmd, emit):
         def write(self, s):
             # print("fire out" + str(s))
             try:
-                emit('fireout', {'stdout': s})
+                emit('fireout', {'stdout': s, 'req_id': req_id})
             # StringIO.write(self, s)
             # sys.__stdout__.write(s)
             except Exception as e:
@@ -73,7 +73,7 @@ def fire_task_wrapper(cmd, emit):
         def write(self, s):
             # print("fire out" + str(s))
             try:
-                emit('fireout', {'stderr': s})
+                emit('fireout', {'stderr': s, 'req_id': req_id})
             # StringIO.write(self, s)
             # sys.__stderr__.write(s)
             except Exception as e:
