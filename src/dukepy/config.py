@@ -1,144 +1,143 @@
-
 import json
 import os
 import uuid
 
-from core.config_defaults import config_defaults
+from dukepy.config_defaults import config_defaults
 from .dict_diff import dict_diff
 from .singleton import Singleton
 
 
 class ConfigError(Exception):
-	pass
+    pass
 
 
 class Config(dict):
-	__metaclass__ = Singleton
+    __metaclass__ = Singleton
 
-	def __str__(self):
-		return json.dumps(self.config, indent=4)
+    def __str__(self):
+        return json.dumps(self.config, indent=4)
 
-	def __init__(self, path=os.path.join(config_defaults()["home"], "config.json"), defaults=None):
-		"""
-		:param path: Full path of the json file
-		:param defaults: Default configuration eg. {"key1":"value1", "keygroup1":{"key2":"value2"}}
-		"""
+    def __init__(self, path=os.path.join(config_defaults()["home"], "config.json"), defaults=None):
+        """
+        :param path: Full path of the json file
+        :param defaults: Default configuration eg. {"key1":"value1", "keygroup1":{"key2":"value2"}}
+        """
 
-		dict.__init__(self, dict())  # Because dict is extended
+        dict.__init__(self, dict())  # Because dict is extended
 
-		self.config_file = os.path.normpath(path)
-		self.config_dir = os.path.dirname(self.config_file)
+        self.config_file = os.path.normpath(path)
+        self.config_dir = os.path.dirname(self.config_file)
 
-		if defaults is None:
-			# self.defaults = self._defaults()
-			self.defaults = config_defaults()
-		else:
-			self.defaults = defaults
+        if defaults is None:
+            # self.defaults = self._defaults()
+            self.defaults = config_defaults()
+        else:
+            self.defaults = defaults
 
-		# create config.json and initialize empty self.config
-		if not os.path.exists(self.config_file):
-			if not os.path.exists(self.config_dir):
-				os.mkdir(self.config_dir)  # Create directory
-			open(self.config_file, "a").close()  # Create empty file
-			self.config = dict()
-			self.config = self.defaults  # Initialize with default values
-			self.commit()
+        # create config.json and initialize empty self.config
+        if not os.path.exists(self.config_file):
+            if not os.path.exists(self.config_dir):
+                os.mkdir(self.config_dir)  # Create directory
+            open(self.config_file, "a").close()  # Create empty file
+            self.config = dict()
+            self.config = self.defaults  # Initialize with default values
+            self.commit()
 
-		# initialize self.config from config.json
-		with open(self.config_file, "r+") as f:
-			conf = f.read()
-			if conf != "":
-				try:
-					config_stored = json.loads(conf)
-					config_deafult = self.defaults
-					are_config_keys_modified = dict_diff(config_deafult, config_stored,
-														 udpate_modified_keys=True,
-														 udpate_added_keys=False,
-														 udpate_removed_keys=False)
+        # initialize self.config from config.json
+        with open(self.config_file, "r+") as f:
+            conf = f.read()
+            if conf != "":
+                try:
+                    config_stored = json.loads(conf)
+                    config_deafult = self.defaults
+                    are_config_keys_modified = dict_diff(config_deafult, config_stored,
+                                                         udpate_modified_keys=True,
+                                                         udpate_added_keys=False,
+                                                         udpate_removed_keys=False)
 
-					self.config = config_deafult
-					if are_config_keys_modified:
-						self.commit()
-				except json.decoder.JSONDecodeError as e:
-					raise ConfigError("Config file invalid format")
-			else:
-				self.config = dict()
+                    self.config = config_deafult
+                    if are_config_keys_modified:
+                        self.commit()
+                except json.decoder.JSONDecodeError as e:
+                    raise ConfigError("Config file invalid format")
+            else:
+                self.config = dict()
 
-	def __enter__(self):
-		""" to enable 'with **' capability, counterpart function is __exit__ """
-		return self
+    def __enter__(self):
+        """ to enable 'with **' capability, counterpart function is __exit__ """
+        return self
 
-	def __exit__(self, exc_type, exc_val, exc_tb):
-		""" commit at the end of 'with **' block """
-		self.commit()
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """ commit at the end of 'with **' block """
+        self.commit()
 
-	def __getitem__(self, key):
-		# return super().__getitem__(key)
-		try:
-			return self.config[key]
-		except KeyError as e:
-			self.__setitem__(key, dict())  # initialize the non-existent keys
-			return self.config[key]
+    def __getitem__(self, key):
+        # return super().__getitem__(key)
+        try:
+            return self.config[key]
+        except KeyError as e:
+            self.__setitem__(key, dict())  # initialize the non-existent keys
+            return self.config[key]
 
-	def __setitem__(self, key, value):
-		# super().__setitem__(key, value)
-		self.config[key] = value
+    def __setitem__(self, key, value):
+        # super().__setitem__(key, value)
+        self.config[key] = value
 
-	def commit(self):
-		"""
-		Commit the configuration changes to file
-		Use "with Config() as config" if auto commit is needed at the end,
-		otherwise use this method.
-		"""
-		# make a copy of the original config
-		from shutil import copyfile
-		copyfile(self.config_file, self.config_file + "." + str(uuid.uuid4()))
+    def commit(self):
+        """
+        Commit the configuration changes to file
+        Use "with Config() as config" if auto commit is needed at the end,
+        otherwise use this method.
+        """
+        # make a copy of the original config
+        from shutil import copyfile
+        copyfile(self.config_file, self.config_file + "." + str(uuid.uuid4()))
 
-		# overwrite the file with new config
-		with open(self.config_file, "w+") as f:
-			json.dump(self.config, f, indent=4)
+        # overwrite the file with new config
+        with open(self.config_file, "w+") as f:
+            json.dump(self.config, f, indent=4)
 
-	def _defaults(self):
-		config_default = dict()
+    def _defaults(self):
+        config_default = dict()
 
-		sqlite_path = os.path.join(self.config_dir, "sqlite.db")
+        sqlite_path = os.path.join(self.config_dir, "sqlite.db")
 
-		config_default["server"] = {
-			"host": "0.0.0.0",
-			"port": "80"
-		}
-		config_default["database"] = {
-			"active": "sqlite",
-			"mysql": {
-				"db": "dummy_db",
-				"user": "dummy_user",
-				"host": "localhost",
-				"password": "dummy_password"
-			},
-			"postgres": {
-				"db": "dummy_db",
-				"user": "dummy_user",
-				"host": "localhost",
-				"password": "dummy_password",
-				"port": "5432"
-			},
-			"sqlite": {
-				"path": sqlite_path
-			},
-			"firebase": {
-				"service_account_key": "path_to_serviceAccountKey.json",
-				"databaseURL": "https://xyz_project_123.firebaseio.com"
-			}
-		}
-		config_default["debug"] = True
-		config_default["stacktrace"] = True
-		config_default["allowed_domains"] = ["http://1", "http://2"]
+        config_default["server"] = {
+            "host": "0.0.0.0",
+            "port": "80"
+        }
+        config_default["database"] = {
+            "active": "sqlite",
+            "mysql": {
+                "db": "dummy_db",
+                "user": "dummy_user",
+                "host": "localhost",
+                "password": "dummy_password"
+            },
+            "postgres": {
+                "db": "dummy_db",
+                "user": "dummy_user",
+                "host": "localhost",
+                "password": "dummy_password",
+                "port": "5432"
+            },
+            "sqlite": {
+                "path": sqlite_path
+            },
+            "firebase": {
+                "service_account_key": "path_to_serviceAccountKey.json",
+                "databaseURL": "https://xyz_project_123.firebaseio.com"
+            }
+        }
+        config_default["debug"] = True
+        config_default["stacktrace"] = True
+        config_default["allowed_domains"] = ["http://1", "http://2"]
 
-		return config_default
+        return config_default
 
 
 if __name__ == "__main__":
-	with Config() as config:
-		pass
+    with Config() as config:
+        pass
 
 # config.commit() #Not required, since we are using with*

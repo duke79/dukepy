@@ -4,40 +4,44 @@ import os
 
 
 def json_dump(obj):
-	print(json.dumps(obj, indent=4, sort_keys=True, default=str))  # https://stackoverflow.com/a/11875813/973425
+    print(json.dumps(obj, indent=4, sort_keys=True, default=str))  # https://stackoverflow.com/a/11875813/973425
 
 
-class Root():
-	"""
-	Root
-	"""
-	cmd_history = []
+def abc(argument=""):
+    return argument
 
-	def __init__(self):
-		os.environ["print_for_cli"] = "1"
 
-		self.abc = ABC...
+class Root:
+    """
+    Root
+    """
+    cmd_history = []
 
-	def dummy_json(self):
-		obj = {
-			"key1": [
-				"val1",
-				{
-					"key2": "val2",
-					"key3": 3.6
-				}
-			]
-		}
-		json_dump(obj)
+    def __init__(self):
+        os.environ["print_for_cli"] = "1"
 
-	def echo(self, arg):
-		"""
-		JSON arg Tested : echo '{"a":"123", "tois":{"moins":12, "hil":["hodor", "mind"]}}'
-		:param arg:
-		:return:
-		"""
-		json_dump(arg)
+        self.abc = abc
 
-	def history(self):
-		for cmd in Root.cmd_history:
-			json_dump(cmd)
+    def dummy_json(self):
+        obj = {
+            "key1": [
+                "val1",
+                {
+                    "key2": "val2",
+                    "key3": 3.6
+                }
+            ]
+        }
+        json_dump(obj)
+
+    def echo(self, arg):
+        """
+        JSON arg Tested : echo '{"a":"123", "tois":{"moins":12, "hil":["hodor", "mind"]}}'
+        :param arg:
+        :return:
+        """
+        json_dump(arg)
+
+    def history(self):
+        for cmd in Root.cmd_history:
+            json_dump(cmd)

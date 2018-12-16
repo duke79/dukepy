@@ -1,16 +1,7 @@
-import sys
-import threading
-
-from io import StringIO
-import asyncio
-from multiprocessing import Process
-
-import fire
 from flask_socketio import emit, Namespace
 
-from cli.fire.fire_cli import Root, fire_task_wrapper
+from dukepy.fire.fire_cli import fire_task_wrapper
 from dukepy.flask import socketio
-from dukepy.processify import processify
 
 
 @socketio.on('my event', namespace='/test')
@@ -35,36 +26,39 @@ def test_disconnect():
 
 
 class SocketNamespace(Namespace):
+    # Catch all events
+    # For JS | https://stackoverflow.com/questions/10405070/socket-io-client-respond-to-all-events-with-one-handler
+    def trigger_event(self, event, *args):
+        """Dispatch an event to the proper handler method.
+
+        In the most common usage, this method is not overloaded by subclasses,
+        as it performs the routing of events to methods. However, this
+        method can be overriden if special dispatching rules are needed, or if
+        having a single method that catches all events is desired.
+        """
+        handler_name = 'on_' + event
+        print(handler_name)
+        if not hasattr(self, handler_name):
+            # This is a custom event, let on_fire try to handle it with req_id
+            args = args + (event,)
+            handler = getattr(self, "on_fire")
+        else:
+            handler = getattr(self, handler_name)
+        return self.socketio._handle_event(handler, event, self.namespace,
+                                           *args)
+
     def on_connect(self):
         emit('my response', {'data': 'welcome!'})
 
     def on_disconnect(self):
         print('Client disconnected')
 
-    def on_message(self, message):
-        print(message)
-        emit('my response', {'data': 'custom message'})
-        fire_task_wrapper(message, emit)
+    def on_fire(self, cmd, req_id=None):
+        fire_task_wrapper(cmd, emit, req_id)
 
     def on_echo(self, message):
-        print(message)
         emit('my response', {'data': message['data']})
 
 
-socketio.on_namespace(SocketNamespace('/custom'))
 
-
-# socketio.emit("my response", "asynco") #has no effect
-
-
-## USELESS
-# async def async_loop():
-#     for i in range(100):
-#         await asyncio.sleep(3)
-#         socketio.emit("my response", "asynco")
-#         print("asynco")
-#
-#
-# loop = asyncio.get_event_loop()
-# # loop.run_until_complete(async_loop())
-# # loop.close()
+socketio.on_namespace(SocketNamespace('/websocket'))
