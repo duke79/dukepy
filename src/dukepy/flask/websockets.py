@@ -26,6 +26,25 @@ def test_disconnect():
 
 
 class SocketNamespace(Namespace):
+    # Catch all events
+    # For JS | https://stackoverflow.com/questions/10405070/socket-io-client-respond-to-all-events-with-one-handler
+    def trigger_event(self, event, *args):
+        """Dispatch an event to the proper handler method.
+
+        In the most common usage, this method is not overloaded by subclasses,
+        as it performs the routing of events to methods. However, this
+        method can be overriden if special dispatching rules are needed, or if
+        having a single method that catches all events is desired.
+        """
+        handler_name = 'on_' + event
+        print(handler_name)
+        if not hasattr(self, handler_name):
+            # there is no handler for this event, so we ignore it
+            return
+        handler = getattr(self, handler_name)
+        return self.socketio._handle_event(handler, event, self.namespace,
+                                           *args)
+
     def on_connect(self):
         emit('my response', {'data': 'welcome!'})
 
